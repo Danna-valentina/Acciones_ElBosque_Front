@@ -5,7 +5,9 @@ import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
+import Logo from '../images/Logo.png';
 import { UsuarioService,UsuarioDTO } from '../service/UsuarioService';
+import '../css/LoginPages.css';
 
 
 const Login: React.FC = () => {
@@ -82,6 +84,9 @@ const Login: React.FC = () => {
 
   return (
     <div className="login-container" style={{ maxWidth: '400px', margin: 'auto' }}>
+      <div className="logo-Copia">
+          <img src={Logo} alt="Acciones ElBosque" className="logo-copia" />
+      </div>
       <h1>Iniciar Sesión</h1>
       {error && <p className="error-message" style={{ color: 'red' }}>{error}</p>}
       <form onSubmit={handleLogin}>
@@ -96,7 +101,7 @@ const Login: React.FC = () => {
         </div>
         <div className="p-field">
           <label htmlFor="password">Contraseña</label>
-          <Password
+          <Password feedback={false}
             inputId="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -109,31 +114,70 @@ const Login: React.FC = () => {
         <a href="/recover-password">¿Olvidaste tu contraseña?</a>
       </p>
       <Dialog
-        header="Verificación de Código"
+        header={
+          <div className="dialog-header">
+            <span>Verificación de Código</span>
+            <button 
+              className="dialog-close-button" 
+              onClick={() => {
+                setShowDialog(false);
+                setVerificationCode('');
+                setCodeError('');
+              }}
+              aria-label="Cerrar diálogo"
+            >
+              ×
+            </button>
+          </div>
+        }
         visible={showDialog}
-        style={{ width: '350px' }}
+        style={{ width: '350px', borderRadius: '12px' }}
         modal
         closable={false}
-        onHide={() => setShowDialog(false)}
+        onHide={() => {
+          setShowDialog(false);
+          setVerificationCode('');
+          setCodeError('');
+        }}
         footer={
-          <div>
-            <Button label="Verificar" onClick={handleVerification} autoFocus />
+          <div className="dialog-footer">
+            <Button 
+              label="Cancelar" 
+              onClick={() => {
+                setShowDialog(false);
+                setVerificationCode('');
+                setCodeError('');
+              }} 
+              className="p-button-text" 
+              type="button"
+            />
+            <Button 
+              label="Verificar" 
+              onClick={handleVerification} 
+              autoFocus
+              className="verify-button"
+              type="button"
+            />
           </div>
         }
       >
-        <p>Ingresa el código de verificación de 6 dígitos que recibiste:</p>
-        <InputText
-          value={verificationCode}
-          onChange={(e) => {
-            const value = e.target.value;
-            if (/^\d*$/.test(value)) {
-              setVerificationCode(value);
-            }
-          }}
-          maxLength={6}
-        />
-
-        {codeError && <p style={{ color: 'red' }}>{codeError}</p>}
+        <div className="dialog-content">
+          <p className="instruction-text">Ingresa el código de verificación de 6 dígitos que recibiste:</p>
+          <InputText
+            value={verificationCode}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              const value = e.target.value;
+              if (/^\d*$/.test(value)) {
+                setVerificationCode(value);
+              }
+            }}
+            maxLength={6}
+            placeholder="______"
+            className="verification-input"
+            keyfilter="int"
+          />
+          {codeError && <p className="error-message">{codeError}</p>}
+        </div>
       </Dialog>
     </div>
   );

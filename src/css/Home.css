@@ -1,4 +1,10 @@
 /* src/Home.css */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #01035a;
+  overflow-x: hidden; /* Previene scroll horizontal */
+}
 .home-container {
   display: flex;
   flex-direction: column;
