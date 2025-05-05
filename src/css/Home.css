@@ -1,18 +1,19 @@
 /* src/Home.css */
 body {
+  overflow-x: hidden; /* Bloquea scroll horizontal */
+  overflow-y: hidden;   /* Permite solo scroll vertical cuando sea necesario */
+  width: 100%;
   margin: 0;
   padding: 0;
-  background-color: #01035a;
-  overflow-x: hidden; /* Previene scroll horizontal */
 }
+
 .home-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  /*background: linear-gradient(135deg, #0f043c 0%, #012f85 50%, #1a4bb8 100%);*/
   background-color: #01035a;
   color: white;
-  padding: 1.5rem;
+  padding: 3rem;
 }
 
 .header {

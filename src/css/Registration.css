@@ -1,0 +1,309 @@
+/* Estilos generales */
+.registration-container {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.registration-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 800px;
+    padding: 2.5rem;
+    margin: 0 auto;
+    min-height: 600px;
+    position: relative;
+}
+
+/* Estilos para los steps */
+.steps-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.step-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    flex: 1;
+    padding: 0 0.5rem;
+    position: relative;
+}
+
+.step-indicator i {
+    font-size: 1.5rem;
+    color: var(--text-color-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.step-indicator span {
+    font-weight: 500;
+    color: var(--text-color-secondary);
+    text-align: center;
+    white-space: nowrap;
+}
+
+.step-indicator.active i,
+.step-indicator.active span {
+    color: var(--primary-color);
+}
+
+.step-indicator.completed i {
+    color: var(--primary-color);
+}
+
+.step-indicator-bar {
+    height: 3px;
+    width: 100%;
+    background-color: var(--primary-color);
+    position: absolute;
+    bottom: -10px;
+}
+
+/* Estilos para los botones en esquinas */
+.corner-button {
+    position: absolute;
+    bottom: 1rem;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background-color: var(--surface-a) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+    transition: all 0.3s ease;
+}
+
+.corner-button:hover {
+    transform: scale(1.1);
+    background-color: var(--surface-b) !important;
+}
+
+.corner-button.left-button {
+    left: 1rem;
+}
+
+.corner-button.right-button {
+    right: 1rem;
+}
+
+.corner-button.success-button {
+    color: var(--primary-color-text) !important;
+    background-color: var(--primary-color) !important;
+}
+
+.corner-button.p-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Ocultar texto de botones */
+.corner-button .p-button-label {
+    display: none;
+}
+
+/* Ajustar tamaño de iconos */
+.corner-button .pi {
+    font-size: 1.5rem;
+}
+
+/* Contenido del formulario */
+.step-content {
+    padding-bottom: 5rem;
+}
+
+/* Mensajes de error */
+.error-message {
+    color: #EF4444;
+    background-color: #FEE2E2;
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-weight: 500;
+}
+
+.field-error-message {
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+}
+
+/* Estilos para campos inválidos */
+.p-invalid {
+    border-color: #EF4444 !important;
+}
+
+.p-invalid:focus {
+    box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.2) !important;
+}
+
+/* Estilos para formularios */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+.form-field {
+    margin-bottom: 1.5rem;
+}
+
+.form-field label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #374151;
+}
+
+.form-field .p-inputtext {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid #D1D5DB;
+    transition: all 0.3s ease;
+}
+
+.form-field .p-inputtext:focus {
+    border-color: #3B82F6;
+    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.2);
+}
+
+/* Configuración */
+.settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.setting-section {
+    background: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.setting-section h3 {
+    color: #3B82F6;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.checkbox-container label {
+    margin-bottom: 0;
+    cursor: pointer;
+    font-size: 0.95rem;
+}
+/* Diálogo compacto - Contenedor principal */
+.compact-success-dialog {
+    width: 380px; /* Ancho fijo para desktop */
+    border-radius: 8px;
+    border-top: 3px solid var(--green-500);
+}
+
+/* Cabecera */
+.compact-success-dialog .p-dialog-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+    background: white;
+}
+
+.compact-success-dialog .p-dialog-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--green-600);
+}
+
+/* Contenido */
+.compact-success-dialog .p-dialog-content {
+    padding: 1.5rem;
+}
+
+/* Pie de diálogo */
+.compact-success-dialog .p-dialog-footer {
+    padding: 0.75rem 1.5rem;
+    border-top: 1px solid #e5e7eb;
+    background: #f9fafb;
+}
+
+/* Contenido de confirmación */
+.compact-confirmation-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+}
+
+.confirmation-icon {
+    font-size: 2.2rem;
+    color: var(--green-500);
+}
+
+.compact-confirmation-content h4 {
+    color: var(--text-color);
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.compact-confirmation-content p {
+    color: var(--text-color-secondary);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* Botón */
+.success-dialog-button {
+    padding: 0.5rem 1.25rem;
+    font-size: 0.875rem;
+}
+
+/* Responsive: Mobile */
+@media (max-width: 640px) {
+    .compact-success-dialog {
+        width: 90vw !important;
+        max-width: 320px;
+    }
+    
+    .compact-confirmation-content {
+        padding: 0.5rem;
+    }
+    
+    .confirmation-icon {
+        font-size: 2rem;
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .success-dialog {
+        width: 90vw !important;
+    }
+    
+    .confirmation-icon {
+        font-size: 3rem;
+    }
+    
+    .confirmation-content h3 {
+        font-size: 1.3rem;
+    }
+    
+    .confirmation-content p {
+        font-size: 1rem;
+    }
+}
