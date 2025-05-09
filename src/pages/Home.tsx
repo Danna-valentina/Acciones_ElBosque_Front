@@ -1,54 +1,109 @@
-// src/pages/Home.tsx
-import { useNavigate } from 'react-router-dom';
-import logo from '../images/Logo.png';
-import velas from '../images/velas.jpg'; // Asegúrate de tener esta imagen en tu carpeta images
+import React, { useRef, useState, ReactElement } from 'react';
+import { Menu } from 'primereact/menu';
+import { MenuItem } from 'primereact/menuitem';
+import { Toast } from 'primereact/toast';
+import Logo from '../images/Logo.png';
 import '../css/Home.css';
 
-const Home: React.FC = () => {
-  const navigate = useNavigate();
+// Componentes de vista (archivos separados)
+import ProfileView from '../views/ProfileView';
+// import NewView from './views/NewView';
+// import SearchView from './views/SearchView';
+// import SettingsView from './views/SettingsView';
+// import MessagesView from './views/MessagesView';
+// import LogoutView from './views/LogoutView';
 
-  const handleLogin = () => {
-    navigate('/LoginPage');
+interface CustomMenuItem extends MenuItem {
+  badge?: number;
+  className?: string;
+}
+
+const Dashboard: React.FC = () => {
+  const toast = useRef<Toast>(null);
+  const menuRef = useRef<Menu>(null);
+  const [activeView, setActiveView] = useState<ReactElement>(<ProfileView />);
+
+  const handleViewChange = (viewComponent: ReactElement) => {
+    setActiveView(viewComponent);
   };
 
-  const handleRegister = () => {
-    navigate('/Registration');
-  };
+  const itemRenderer = (item: CustomMenuItem) => (
+    <div className="menuitem-content">
+      <a 
+        className="menuitem-link" 
+        onClick={(e: React.MouseEvent) => {
+          e.preventDefault();
+          item.command?.({ originalEvent: e, item });
+        }}
+      >
+        <span className={`menuitem-icon ${item.icon}`} />
+        <span className="menuitem-label">{item.label}</span>
+        {item.badge !== undefined && (
+          <span className="menuitem-badge">{item.badge}</span>
+        )}
+      </a>
+    </div>
+  );
+
+  const menuItems: CustomMenuItem[] = [
+    { 
+      label: 'Dashboard', 
+      icon: 'pi pi-chart-line', 
+      template: itemRenderer,
+      // command: () => handleViewChange(<SearchView />)
+    },
+    { 
+      label: 'Portafolio', 
+      icon: 'pi pi-briefcase', 
+      template: itemRenderer,
+      // command: () => handleViewChange(<SettingsView />)
+    },
+    { 
+      label: 'Messages', 
+      icon: 'pi pi-inbox', 
+      badge: 2, 
+      template: itemRenderer,
+      className: 'menuitem-messages',
+      // command: () => handleViewChange(<MessagesView />)
+    },
+    {
+      label: 'Info',
+      icon: 'pi pi-user',
+      template: itemRenderer,
+      command: () => handleViewChange(<ProfileView />)
+    },
+    { 
+      label: 'Logout', 
+      icon: 'pi pi-sign-out', 
+      template: itemRenderer,
+      className: 'menuitem-logout',
+      // command: () => handleViewChange(<LogoutView />)
+    }
+    
+  ];
 
   return (
-    <div className="home-container">
-      <div className="header">
-        <div className="logo">
-          <img src={logo} alt="Acciones ElBosque" className="logo-image" />
+    <div className="dashboard-container">
+      <header className="dashboard-header">
+        <div className="header-content logo-container">
+            <img src={Logo} alt="Acciones ElBosque" className="logo-dsh" />
         </div>
-        <div className="auth-buttons">
-          <button className="auth-btn login-btn" onClick={handleLogin} >
-            Iniciar Sesión
-          </button>
-          <button className="auth-btn register-btn" onClick={handleRegister}>
-            Registrarse
-          </button>
+      </header>
+      <div className="main-content">
+        <div className="sidebar-menu-container">
+          <Menu 
+            ref={menuRef}
+            model={menuItems} 
+            className="app-sidebar-menu"
+            popup={false}
+          />
         </div>
-      </div>
-      
-      <div className="content-wrapper">
-        <div className="hero-content">
-          <h1>Invierte en Acciones con Acciones ElBosque</h1>
-          <p className="hero-subtitle">
-            Opera con condiciones competitivas y elige entre cientos de empresas en los mercados globales.
-          </p>
-          <div className="cta-section">
-            <button className="cta-button" onClick={handleRegister}>
-              ABRIR UNA CUENTA
-            </button>
-          </div>
-        </div>
-        <div className="image-section">
-          <img src={velas} alt="Gráfico de velas" className="velas-image" />
+        <div className="main-view-content">
+          {activeView}
         </div>
       </div>
     </div>
   );
 };
 
-export default Home;
+export default Dashboard;

@@ -1,8 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
+import Landingpage from "./pages/Landingpage";
 import LoginPage from "./pages/LoginPage";
-import Dashboard from "./pages/Dashboard";
+import Home from "./pages/Home";
 import Registration from "./pages/Registration";
+import ProfileView from "./views/ProfileView";
 
 
 
@@ -10,10 +11,12 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Landingpage />} />
         <Route path="/LoginPage" element={<LoginPage />} />
-        <Route path="/Dashboard" element={<Dashboard />} />
+        <Route path="/Home" element={<Home/>} />
         <Route path="/Registration" element={<Registration />} />
+        <Route path="/dashboard/profile" element={<ProfileView />} />
+        
       </Routes>
     </BrowserRouter>
   );

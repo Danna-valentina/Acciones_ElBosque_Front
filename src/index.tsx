@@ -5,6 +5,8 @@ import reportWebVitals from './reportWebVitals';
 import 'primereact/resources/themes/lara-light-blue/theme.css'; // o cualquier tema que uses
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
+import 'primeflex/primeflex.css';
+
 
 
 const root = ReactDOM.createRoot(

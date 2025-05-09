@@ -1,0 +1,177 @@
+/* ProfileView.css - Versión adaptada manteniendo profile-container original */
+
+/* Contenedor principal (NO MODIFICAR) */
+.profile-container {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    width: 1155px;
+    height: calc(100vh - 9rem);
+    z-index: 999;
+    overflow-y: auto;
+    top: 7rem;
+    left: 22rem;
+}
+
+/* Encabezado mejorado */
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 10;
+    padding-top: 0.5rem;
+}
+
+.profile-header h2 {
+    color: #1e293b;
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+/* Botones de acción */
+.edit-button {
+    color: #3b82f6 !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 0.5rem 1rem !important;
+}
+
+.edit-button:hover {
+    background-color: rgba(59, 130, 246, 0.1) !important;
+}
+
+.edit-actions {
+    display: flex;
+    gap: 0.30rem;
+    height: 50px;
+}
+
+/* Contenido del perfil ajustado para contenedor fijo */
+.profile-content {
+    display: flex;
+    gap: 3rem;
+    align-items: flex-start;
+    padding-bottom: 2rem; /* Espacio para scroll */
+}
+
+/* Sección de imagen mejorada */
+.profile-image-section {
+    flex-shrink: 0;
+    position: sticky;
+    top: 5rem; /* Debajo del header sticky */
+    align-self: flex-start;
+}
+
+.profile-image-container {
+    width: 150px;
+    height: 150px;
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.empty-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: #f8fafc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    border: 3px solid #e2e8f0;
+    font-size: 3.5rem;
+}
+
+/* Detalles del perfil optimizados */
+.profile-details {
+    flex: 1;
+    min-width: 0; /* Previene overflow */
+}
+
+.detail-row {
+    display: flex;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #f1f5f9;
+    align-items: center;
+    min-height: 40px;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #334155;
+    width: 180px;
+    flex-shrink: 0;
+    font-size: 0.95rem;
+}
+
+.detail-value {
+    color: #475569;
+    flex: 1;
+    word-break: break-word;
+}
+
+/* Campos de entrada en modo edición */
+.p-inputtext-sm {
+    width: 100%;
+    max-width: 300px;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.p-inputtext-sm:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Spinner de carga */
+.profile-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+/* Responsive adaptado para contenedor fijo */
+@media (max-width: 1200px) {
+    .profile-content {
+        flex-direction: column;
+        gap: 2rem;
+    }
+    
+    .profile-image-section {
+        position: static;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .detail-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .detail-label {
+        width: 100%;
+    }
+    
+    .p-inputtext-sm {
+        max-width: 100%;
+    }
+}
