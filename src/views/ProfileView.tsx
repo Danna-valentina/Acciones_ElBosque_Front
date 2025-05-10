@@ -3,6 +3,7 @@ import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Divider } from 'primereact/divider';
 import { ProgressSpinner } from 'primereact/progressspinner';
+import { RadioButton } from 'primereact/radiobutton';
 import '../css/ProfileView.css';
 
 interface UserProfile {
@@ -26,7 +27,9 @@ const ProfileView: React.FC<ProfileViewProps> = ({
   loading = false
 }) => {
   const [editMode, setEditMode] = useState(false);
-  // Datos de ejemplo estáticos (luego se reemplazarán con props)
+  const [selectedPlan, setSelectedPlan] = useState<'mensual' | 'anual'>('mensual');
+  
+  // Datos de ejemplo estáticos
   const [user, setUser] = useState<UserProfile>({ 
     email: 'usuario@ejemplo.com',
     primerNombre: 'Juan',
@@ -45,13 +48,11 @@ const ProfileView: React.FC<ProfileViewProps> = ({
   };
 
   const handleSave = () => {
-    // Aquí iría la lógica para guardar los cambios
     console.log('Datos guardados:', user);
     setEditMode(false);
   };
 
   const handleCancel = () => {
-    // Restaurar valores originales (en una implementación real, esto vendría de los props)
     setUser({ 
       email: 'usuario@ejemplo.com',
       primerNombre: 'Juan',
@@ -67,6 +68,10 @@ const ProfileView: React.FC<ProfileViewProps> = ({
     setEditMode(false);
   };
 
+  const handlePremiumPurchase = () => {
+    alert(`Redirigiendo a compra del plan ${selectedPlan === 'mensual' ? 'mensual ($9.99)' : 'anual ($99.99)'}`);
+  };
+
   if (loading) {
     return (
       <div className="profile-loading">
@@ -78,7 +83,10 @@ const ProfileView: React.FC<ProfileViewProps> = ({
   return (
     <div className="profile-container">
       <div className="profile-header">
-        <h2>Perfil de Usuario</h2>
+        <div>
+                  <h2>Perfil de Usuario</h2>
+
+        </div>
         <div>{!editMode ? (
           <Button 
             label="Editar Perfil"
@@ -93,7 +101,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({
               icon="pi pi-check"
               className="p-button-success p-button-sm"
               onClick={handleSave}
-              disabled={!user.primerNombre} // Validación básica
+              disabled={!user.primerNombre}
             />
             <Button 
               label="Cancelar"
@@ -103,11 +111,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({
             />
           </div>
         )}</div>
-        
       </div>
-      
-      <Divider />
-
       <div className="profile-content">
         <div className="profile-image-section">
           <div className="profile-image-container">
@@ -202,6 +206,64 @@ const ProfileView: React.FC<ProfileViewProps> = ({
           <div className="detail-row">
             <span className="detail-label">Saldo:</span>
             <span className="detail-value">{user.saldo}</span>
+          </div>
+
+                    {/* Sección de Suscripción Premium */}
+          <div className="premium-subscription-section">
+            <div className="premium-subscription-container">
+              <h3>Suscripción Premium</h3>
+              
+              <div className="plan-options-container">
+                <div 
+                  className={`plan-option ${selectedPlan === 'mensual' ? 'plan-option-selected' : ''}`}
+                  onClick={() => setSelectedPlan('mensual')}
+                >
+                  <div className="plan-option-content">
+                    <RadioButton 
+                      inputId="mensual" 
+                      name="plan" 
+                      value="mensual"
+                      checked={selectedPlan === 'mensual'}
+                      onChange={() => setSelectedPlan('mensual')}
+                    />
+                    <label htmlFor="mensual">Plan Mensual</label>
+                  </div>
+                  <div className="plan-price">$12.00 USD /mes</div>
+                </div>
+
+                <div 
+                  className={`plan-option ${selectedPlan === 'anual' ? 'plan-option-selected' : ''}`}
+                  onClick={() => setSelectedPlan('anual')}
+                >
+                  <div className="plan-option-content">
+                    <RadioButton 
+                      inputId="anual" 
+                      name="plan" 
+                      value="anual"
+                      checked={selectedPlan === 'anual'}
+                      onChange={() => setSelectedPlan('anual')}
+                    />
+                    <label htmlFor="anual">Plan Anual</label>
+                  </div>
+                  <div className="plan-price">$120.00 USD año</div>
+                </div>
+              </div>
+
+              <Button 
+                label={`Comprar ${selectedPlan === 'mensual' ? 'Plan Mensual' : 'Plan Anual'}`} 
+                icon="pi pi-shopping-cart" 
+                onClick={handlePremiumPurchase}
+                className="p-button-warning premium-purchase-button"
+              />
+            </div>
+            <div>
+              <Button 
+                label={"Eliminar cuenta"} 
+                icon="pi pi-trash" 
+                // onClick=
+                severity="danger" outlined
+              />
+            </div>
           </div>
         </div>
       </div>

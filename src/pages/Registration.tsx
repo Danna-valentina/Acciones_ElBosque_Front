@@ -332,9 +332,9 @@ const RegistrationWizard = () => {
                                 <Button 
                                     label="Comprar Suscripción Premium" 
                                     icon="pi pi-shopping-cart" 
-                                    onClick={() => alert('Redirigiendo a página de compra...')}
+                                    onClick={() => navigate("/pagos")}
                                     className="p-button-warning"
-                                    style={{ width: '100%', padding: '1rem' }}
+                                    // style={{ width: '100%', padding: '1rem' }}
                                 />
                             </div>
                         </div>
