@@ -8,7 +8,10 @@ import { Dropdown } from 'primereact/dropdown';
 import { Checkbox, CheckboxChangeEvent } from 'primereact/checkbox';
 import { Message } from 'primereact/message';
 import { Dialog } from 'primereact/dialog';
+import { UsuarioRequest, Moneda } from '../type/user';
+import { UsuarioService } from '../service/UsuarioService';
 import '../css/Registration.css';
+import { RadioButton } from 'primereact/radiobutton';
 
 const RegistrationWizard = () => {
     const navigate = useNavigate();
@@ -21,19 +24,21 @@ const RegistrationWizard = () => {
         email: '',
         password: '',
         phone: '',
-        currency: 'EUR',
+        currency: Moneda.USD as Moneda,
         notifications: true,
-        subscription: 'basic'
+        subscription: 'premium_monthly',
+        subscriptionType: 'mensual' as 'mensual' | 'anual'
     });
     const [error, setError] = useState('');
     const [fieldErrors, setFieldErrors] = useState<Record<string, boolean>>({});
+    const [selectedPlan, setSelectedPlan] = useState<'mensual' | 'anual'>('mensual');
     const [showSuccessDialog, setShowSuccessDialog] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const currencyOptions = [
-        { label: 'Dólar Estadounidense (USD)', value: 'USD' },
-        { label: 'Euro (EUR)', value: 'EUR' },
-        { label: 'Libra Esterlina (GBP)', value: 'GBP' }
+        { label: 'Dólar Estadounidense (USD)', value: Moneda.USD },
+        { label: 'Euro (EUR)', value: Moneda.EUR },
+        { label: 'Libra Esterlina (GBP)', value: Moneda.GBP }
     ];
 
     const steps = [
@@ -67,9 +72,19 @@ const RegistrationWizard = () => {
             setError('');
         }
     };
+    const handlePlanChange = (type: 'mensual' | 'anual') => {
+        setFormData(prev => ({
+            ...prev,
+            subscriptionType: type,
+            subscription: type === 'mensual' ? 'premium_monthly' : 'premium_yearly'
+        }));
+    };
 
     const handleCurrencyChange = (e: { value: string }) => {
-        setFormData(prev => ({ ...prev, currency: e.value }));
+        setFormData(prev => ({
+            ...prev,
+            currency: e.value as Moneda
+        }));
     };
 
     const handleNotificationsChange = (e: CheckboxChangeEvent) => {
@@ -82,7 +97,7 @@ const RegistrationWizard = () => {
         setError('');
 
         if (activeIndex === 0) {
-            const requiredFields = ['primerNombre', 'primerApellido', 'segundoApellido'];
+            const requiredFields = ['primerNombre', 'primerApellido'];
             requiredFields.forEach(field => {
                 const value = formData[field as keyof typeof formData];
                 if (typeof value === 'string' && !value.trim()) {
@@ -121,6 +136,8 @@ const RegistrationWizard = () => {
         return isValid;
     };
 
+
+
     const nextStep = () => {
         setError('');
         if (validateCurrentStep()) {
@@ -133,43 +150,73 @@ const RegistrationWizard = () => {
         setError('');
     };
 
-    const mockApiRegister = async (data: typeof formData) => {
-        // Simulación de llamada API
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        return { success: true, message: 'Registro exitoso' };
-    };
+    const [usuarioCreado, setUsuarioCreado] = useState(false);
 
-    const handleSubmit = async () => {
-        setError('');
+    const crearUsuario = async (): Promise<boolean> => {
+        if (usuarioCreado) return true;
+
+        if (!validateCurrentStep()) return false;
+
         setIsSubmitting(true);
-        
-        if (!validateCurrentStep()) {
-            setIsSubmitting(false);
-            return;
-        }
+        setError('');
+
+        const usuarioService = new UsuarioService();
+        const usuario: UsuarioRequest = {
+            primerNombre: formData.primerNombre,
+            segundoNombre: formData.segundoNombre,
+            primerApellido: formData.primerApellido,
+            segundoApellido: formData.segundoApellido,
+            email: formData.email,
+            telefono: formData.phone.replace(/\D/g, ''),
+            contrasena: formData.password,
+            moneda: formData.currency,
+            notificaciones: formData.notifications
+        };
 
         try {
-            const response = await mockApiRegister(formData);
-            
-            if (response.success) {
-                setShowSuccessDialog(true);
-                setTimeout(() => navigate('/LoginPage'), 3000);
+            await usuarioService.crearUsuario(usuario);
+            setUsuarioCreado(true);
+            return true;
+        } catch (error: any) {
+            if (error.response?.status === 409) {
+                setError("Ya existe un usuario con este correo electrónico.");
             } else {
-                setError(response.message || 'Error en el registro');
+                setError("Error al registrar el usuario. Intenta nuevamente.");
             }
-        } catch (error) {
-            setError('Error de conexión. Por favor intenta nuevamente.');
+            return false;
         } finally {
             setIsSubmitting(false);
+        }
+    };
+    const handleSubmit = async () => {
+        const creado = await crearUsuario();
+        if (creado) {
+            setShowSuccessDialog(true);
+            setTimeout(() => navigate('/LoginPage'), 3000);
+        }
+    };
+    const handleComprarSuscripcion = async () => {
+        const creado = await crearUsuario();
+        if (!creado) return;
+
+
+
+        try {
+            const usuarioService = new UsuarioService();
+            const response = await usuarioService.enviarSuscripcion(formData.subscriptionType);
+            window.location.href = response;
+        } catch (error) {
+            console.error("Error al crear la suscripción:", error);
+            setError("No se pudo redirigir a Stripe. Intenta nuevamente.");
         }
     };
 
     const StepIndicator = ({ step, index }: { step: { label: string, icon: string }, index: number }) => {
         const isActive = activeIndex === index;
         const isCompleted = activeIndex > index;
-        
+
         return (
-            <div 
+            <div
                 className={`step-indicator ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}`}
                 onClick={() => {
                     if (index < activeIndex || validateCurrentStep()) {
@@ -186,14 +233,14 @@ const RegistrationWizard = () => {
 
     const renderFieldError = (fieldName: string) => {
         return fieldErrors[fieldName] && (
-            <Message 
-                severity="error" 
+            <Message
+                severity="error"
                 text={
-                    fieldName === 'phone' 
-                        ? 'Número de teléfono requerido' 
+                    fieldName === 'phone'
+                        ? 'Número de teléfono requerido'
                         : 'Este campo es requerido'
-                } 
-                className="field-error-message" 
+                }
+                className="field-error-message"
             />
         );
     };
@@ -207,12 +254,12 @@ const RegistrationWizard = () => {
                     ))}
                 </div>
 
-                <Button 
-                    icon="pi pi-arrow-left" 
+                <Button
+                    icon="pi pi-arrow-left"
                     disabled={activeIndex === 0}
                     onClick={prevStep}
                     className={`corner-button left-button ${activeIndex === 0 ? 'p-disabled' : ''}`}
-                    text 
+                    text
                     raised
                 />
 
@@ -223,40 +270,40 @@ const RegistrationWizard = () => {
                         <div className="form-grid">
                             <div className="form-field">
                                 <label htmlFor="primerNombre">Primer nombre *</label>
-                                <InputText 
-                                    id="primerNombre" 
-                                    value={formData.primerNombre} 
-                                    onChange={handleInputChange} 
+                                <InputText
+                                    id="primerNombre"
+                                    value={formData.primerNombre}
+                                    onChange={handleInputChange}
                                     className={fieldErrors['primerNombre'] ? 'p-invalid' : ''}
                                 />
                                 {renderFieldError('primerNombre')}
                             </div>
                             <div className="form-field">
                                 <label htmlFor="segundoNombre">Segundo nombre *</label>
-                                <InputText 
-                                    id="segundoNombre" 
-                                    value={formData.segundoNombre} 
-                                    onChange={handleInputChange} 
+                                <InputText
+                                    id="segundoNombre"
+                                    value={formData.segundoNombre}
+                                    onChange={handleInputChange}
                                     className={fieldErrors['segundoNombre'] ? 'p-invalid' : ''}
                                 />
                                 {renderFieldError('segundoNombre')}
                             </div>
                             <div className="form-field">
                                 <label htmlFor="primerApellido">Primer apellido *</label>
-                                <InputText 
-                                    id="primerApellido" 
-                                    value={formData.primerApellido} 
-                                    onChange={handleInputChange} 
+                                <InputText
+                                    id="primerApellido"
+                                    value={formData.primerApellido}
+                                    onChange={handleInputChange}
                                     className={fieldErrors['primerApellido'] ? 'p-invalid' : ''}
                                 />
                                 {renderFieldError('primerApellido')}
                             </div>
                             <div className="form-field">
                                 <label htmlFor="segundoApellido">Segundo apellido *</label>
-                                <InputText 
-                                    id="segundoApellido" 
-                                    value={formData.segundoApellido} 
-                                    onChange={handleInputChange} 
+                                <InputText
+                                    id="segundoApellido"
+                                    value={formData.segundoApellido}
+                                    onChange={handleInputChange}
                                     className={fieldErrors['segundoApellido'] ? 'p-invalid' : ''}
                                 />
                                 {renderFieldError('segundoApellido')}
@@ -278,11 +325,11 @@ const RegistrationWizard = () => {
                             </div>
                             <div className="form-field">
                                 <label htmlFor="password">Contraseña *</label>
-                                <Password 
+                                <Password
                                     inputId="password"
-                                    value={formData.password} 
-                                    onChange={handlePasswordChange} 
-                                    toggleMask 
+                                    value={formData.password}
+                                    onChange={handlePasswordChange}
+                                    toggleMask
                                     feedback={true}
                                     className={fieldErrors['password'] ? 'p-invalid' : ''}
                                 />
@@ -290,9 +337,9 @@ const RegistrationWizard = () => {
                             </div>
                             <div className="form-field">
                                 <label htmlFor="phone">Teléfono *</label>
-                                <InputMask 
+                                <InputMask
                                     id="phone"
-                                    mask="(999) 999-9999" 
+                                    mask="(999) 999-9999"
                                     placeholder="(999) 999-9999"
                                     value={formData.phone}
                                     onChange={handlePhoneChange}
@@ -329,40 +376,82 @@ const RegistrationWizard = () => {
                                 </div>
                             </div>
                             <div className="setting-section">
-                                <Button 
-                                    label="Comprar Suscripción Premium" 
-                                    icon="pi pi-shopping-cart" 
-                                    onClick={() => navigate("/pagos")}
-                                    className="p-button-warning"
-                                    // style={{ width: '100%', padding: '1rem' }}
-                                />
+                                <div className="premium-subscription-section">
+                                    <div className="premium-subscription-container">
+                                        <h3>Suscripción Premium</h3>
+
+                                        <div className="plan-options-container">
+                                            <div
+                                                className={`plan-option ${formData.subscriptionType === 'mensual' ? 'plan-option-selected' : ''}`}
+                                                onClick={() => handlePlanChange('mensual')}
+                                            >
+                                                <div className="plan-option-content">
+                                                    <RadioButton
+                                                        inputId="mensual"
+                                                        name="plan"
+                                                        value="mensual"
+                                                        checked={formData.subscriptionType === 'mensual'}
+                                                        onChange={() => handlePlanChange('mensual')}
+                                                    />
+                                                    <label htmlFor="mensual">Plan Mensual</label>
+                                                </div>
+                                                <div className="plan-price">$12.00 USD /mes</div>
+                                            </div>
+
+                                            <div
+                                                className={`plan-option ${formData.subscriptionType === 'anual' ? 'plan-option-selected' : ''}`}
+                                                onClick={() => handlePlanChange('anual')}
+                                            >
+                                                <div className="plan-option-content">
+                                                    <RadioButton
+                                                        inputId="anual"
+                                                        name="plan"
+                                                        value="anual"
+                                                        checked={formData.subscriptionType === 'anual'}
+                                                        onChange={() => handlePlanChange('anual')}
+                                                    />
+                                                    <label htmlFor="anual">Plan Anual</label>
+                                                </div>
+                                                <div className="plan-price">$120.00 USD año</div>
+                                            </div>
+                                        </div>
+
+                                        <Button
+                                            label={`Comprar ${formData.subscriptionType === 'mensual' ? 'Plan Mensual' : 'Plan Anual'}`}
+                                            icon="pi pi-shopping-cart"
+                                            onClick={handleComprarSuscripcion}
+                                            className="p-button-warning premium-purchase-button"
+                                        />
+                                    </div>
+                                </div>
                             </div>
+
                         </div>
                     )}
                 </div>
 
                 {activeIndex < steps.length - 1 ? (
-                    <Button 
-                        icon="pi pi-arrow-right" 
+                    <Button
+                        icon="pi pi-arrow-right"
                         onClick={nextStep}
                         className="corner-button right-button"
-                        text 
+                        text
                         raised
                     />
                 ) : (
-                    <Button 
-                        icon="pi pi-check" 
+                    <Button
+                        icon="pi pi-check"
                         onClick={handleSubmit}
                         className="corner-button right-button success-button"
-                        text 
+                        text
                         raised
                         loading={isSubmitting}
                     />
                 )}
             </div>
 
-            <Dialog 
-                visible={showSuccessDialog} 
+            <Dialog
+                visible={showSuccessDialog}
                 onHide={() => {
                     setShowSuccessDialog(false);
                     navigate('/LoginPages');
@@ -370,10 +459,10 @@ const RegistrationWizard = () => {
                 header="Registro Exitoso"
                 footer={
                     <div className="dialog-footer">
-                        <Button 
-                            label="Ir a Login" 
-                            icon="pi pi-sign-in" 
-                            onClick={() => navigate('/LoginPages')} 
+                        <Button
+                            label="Ir a Login"
+                            icon="pi pi-sign-in"
+                            onClick={() => navigate('/LoginPages')}
                             className="success-dialog-button"
                         />
                     </div>

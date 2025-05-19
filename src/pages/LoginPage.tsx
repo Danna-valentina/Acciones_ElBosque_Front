@@ -6,7 +6,7 @@ import { Password } from 'primereact/password';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import Logo from '../images/Logo.png';
-import { UsuarioService,UsuarioDTO } from '../service/UsuarioService';
+import { UsuarioService,EmailDTO } from '../service/UsuarioService';
 import '../css/LoginPages.css';
 
 
@@ -33,10 +33,9 @@ const Login: React.FC = () => {
       setError('La contraseña debe tener al menos 8 caracteres.');
       return;
     }
-
-    const usuario: UsuarioDTO = {
+      const usuario: EmailDTO = {
       email: email,
-      contrasena: password
+      password: password
     };
     // Aquí puedes agregar la lógica para manejar el inicio de sesión
     console.log('Iniciando sesión con:', { email, password });
@@ -68,11 +67,12 @@ const Login: React.FC = () => {
       const token = await usuarioService.verificarCodigo(email, verificationCode);
       console.log("Token recibido:", token);
       localStorage.setItem("token", token);
+      localStorage.setItem("email",email);
     
     setCodeError('');
     console.log('Código verificado:', verificationCode);
     setShowDialog(false);
-    navigate('/Dashboard');
+    navigate('/Home');
     }catch (error: any) {
       if (error.response?.status === 401) {
         setCodeError("Código incorrecto o expirado");

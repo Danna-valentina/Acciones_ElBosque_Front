@@ -1,78 +1,109 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Divider } from 'primereact/divider';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { RadioButton } from 'primereact/radiobutton';
 import '../css/ProfileView.css';
+import { UserProfile } from '../type/user';
+import { UsuarioService } from '../service/UsuarioService';
+import { error } from 'console';
 
-interface UserProfile {
-  email: string;
-  primerNombre: string;
-  segundoNombre: string;
-  primerApellido: string;
-  segundoApellido: string;
-  telefono: string;
-  estado: string;
-  rol: string;
-  saldo: number;
-  lastAccess?: string;
-}
 
-interface ProfileViewProps {
-  loading?: boolean;
-}
-
-const ProfileView: React.FC<ProfileViewProps> = ({ 
-  loading = false
-}) => {
+const ProfileView: React.FC = () => {
   const [editMode, setEditMode] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<'mensual' | 'anual'>('mensual');
-  
-  // Datos de ejemplo estáticos
-  const [user, setUser] = useState<UserProfile>({ 
-    email: 'usuario@ejemplo.com',
-    primerNombre: 'Juan',
-    segundoNombre: 'Carlos',
-    primerApellido: 'Pérez',
-    segundoApellido: 'Gómez',
-    telefono: '555-1234',
-    estado: 'Activo',
-    rol: 'Usuario',
-    saldo: 1000,
-    lastAccess: '2023-05-15 14:30'
-  });
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const [tieneSuscripcion, setTieneSuscripcion] = useState<boolean | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const email = localStorage.getItem('email');
+  console.log('Email:', email);
+  const usuarioService = new UsuarioService();
+  useEffect(() => {
+    let isMounted = true;
+    if (email) {
+      setIsLoading(true);
+      const fetchData = async () => {
+        try {
+
+          setIsLoading(true);
+          const userData = await usuarioService.obtenerInfoPerfil(email);
+
+          if (isMounted) setUser(userData);
+
+          const tiene = await usuarioService.verificarSuscripcion(userData.email);
+          if (isMounted) setTieneSuscripcion(tiene);
+
+        } catch (error) {
+          if (isMounted) {
+            console.error('Error al cargar perfil o suscripcion:', error);
+            setTieneSuscripcion(false);
+          }
+        } finally {
+          if (isMounted) {
+            setIsLoading(false);
+          }
+        }
+      };
+
+      if (email) {
+        fetchData();
+      } else {
+        setIsLoading(false); 
+        console.error("No se encontró email en localStorage");
+      }
+
+      return () => {
+        isMounted = false;
+      };
+    }
+  }, [email]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, field: keyof UserProfile) => {
-    setUser({ ...user, [field]: e.target.value });
+    if (user) {
+      setUser({
+        ...user,
+        [field]: e.target.value
+      });
+    }
   };
 
+
   const handleSave = () => {
-    console.log('Datos guardados:', user);
-    setEditMode(false);
+    if (user) {
+      console.log('Datos guardados:', user);
+      setEditMode(false);
+    }
   };
 
   const handleCancel = () => {
-    setUser({ 
-      email: 'usuario@ejemplo.com',
-      primerNombre: 'Juan',
-      segundoNombre: 'Carlos',
-      primerApellido: 'Pérez',
-      segundoApellido: 'Gómez',
-      telefono: '555-1234',
-      estado: 'Activo',
-      rol: 'Usuario',
-      saldo: 1000,
-      lastAccess: '2023-05-15 14:30'
-    });
-    setEditMode(false);
+    if (email) {
+      setIsLoading(true);
+      usuarioService.obtenerInfoPerfil(email)
+        .then((data: UserProfile) => {
+          setUser(data);
+          setEditMode(false);
+        })
+        .catch(error => {
+          console.error('Error al recuperar datos originales:', error);
+        })
+        .finally(() => setIsLoading(false));
+    }
   };
 
-  const handlePremiumPurchase = () => {
-    alert(`Redirigiendo a compra del plan ${selectedPlan === 'mensual' ? 'mensual ($9.99)' : 'anual ($99.99)'}`);
-  };
+  const handlePremiumPurchase = async () => {
+  if (!user) return;
 
-  if (loading) {
+  try {
+    const response = await usuarioService.enviarSuscripcion(selectedPlan);
+    window.location.href = response;
+  } catch (error) {
+    console.error("Error al crear la suscripción:", error);
+    alert("No se pudo redirigir a Stripe. Intenta nuevamente.");
+  }
+};
+
+  if (isLoading || !user) {
     return (
       <div className="profile-loading">
         <ProgressSpinner />
@@ -84,11 +115,11 @@ const ProfileView: React.FC<ProfileViewProps> = ({
     <div className="profile-container">
       <div className="profile-header">
         <div>
-                  <h2>Perfil de Usuario</h2>
+          <h2>Perfil de Usuario</h2>
 
         </div>
         <div>{!editMode ? (
-          <Button 
+          <Button
             label="Editar Perfil"
             icon="pi pi-pencil"
             className="p-button-text p-button-sm edit-button"
@@ -96,14 +127,14 @@ const ProfileView: React.FC<ProfileViewProps> = ({
           />
         ) : (
           <div className="edit-actions">
-            <Button 
+            <Button
               label="Guardar"
               icon="pi pi-check"
               className="p-button-success p-button-sm"
               onClick={handleSave}
               disabled={!user.primerNombre}
             />
-            <Button 
+            <Button
               label="Cancelar"
               icon="pi pi-times"
               className="p-button-text p-button-sm"
@@ -120,7 +151,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({
             </div>
           </div>
         </div>
-        
+
         <div className="profile-details">
           <div className="detail-row">
             <span className="detail-label">Email:</span>
@@ -130,7 +161,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({
           <div className="detail-row">
             <span className="detail-label">Primer Nombre:</span>
             {editMode ? (
-              <InputText 
+              <InputText
                 value={user.primerNombre}
                 onChange={(e) => handleInputChange(e, 'primerNombre')}
                 className="p-inputtext-sm"
@@ -144,7 +175,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({
           <div className="detail-row">
             <span className="detail-label">Segundo Nombre:</span>
             {editMode ? (
-              <InputText 
+              <InputText
                 value={user.segundoNombre}
                 onChange={(e) => handleInputChange(e, 'segundoNombre')}
                 className="p-inputtext-sm"
@@ -157,7 +188,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({
           <div className="detail-row">
             <span className="detail-label">Primer Apellido:</span>
             {editMode ? (
-              <InputText 
+              <InputText
                 value={user.primerApellido}
                 onChange={(e) => handleInputChange(e, 'primerApellido')}
                 className="p-inputtext-sm"
@@ -170,7 +201,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({
           <div className="detail-row">
             <span className="detail-label">Segundo Apellido:</span>
             {editMode ? (
-              <InputText 
+              <InputText
                 value={user.segundoApellido}
                 onChange={(e) => handleInputChange(e, 'segundoApellido')}
                 className="p-inputtext-sm"
@@ -183,7 +214,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({
           <div className="detail-row">
             <span className="detail-label">Teléfono:</span>
             {editMode ? (
-              <InputText 
+              <InputText
                 value={user.telefono}
                 onChange={(e) => handleInputChange(e, 'telefono')}
                 className="p-inputtext-sm"
@@ -199,71 +230,79 @@ const ProfileView: React.FC<ProfileViewProps> = ({
           </div>
 
           <div className="detail-row">
-            <span className="detail-label">Rol:</span>
-            <span className="detail-value">{user.rol}</span>
-          </div>
-
-          <div className="detail-row">
             <span className="detail-label">Saldo:</span>
             <span className="detail-value">{user.saldo}</span>
           </div>
 
-                    {/* Sección de Suscripción Premium */}
-          <div className="premium-subscription-section">
-            <div className="premium-subscription-container">
-              <h3>Suscripción Premium</h3>
-              
-              <div className="plan-options-container">
-                <div 
-                  className={`plan-option ${selectedPlan === 'mensual' ? 'plan-option-selected' : ''}`}
-                  onClick={() => setSelectedPlan('mensual')}
-                >
-                  <div className="plan-option-content">
-                    <RadioButton 
-                      inputId="mensual" 
-                      name="plan" 
-                      value="mensual"
-                      checked={selectedPlan === 'mensual'}
-                      onChange={() => setSelectedPlan('mensual')}
-                    />
-                    <label htmlFor="mensual">Plan Mensual</label>
+          <div className="detail-row">
+            <span className="detail-label">Moneda Base:</span>
+            <span className="detail-value">{user.configuracion.monedaBase}</span>
+          </div>
+
+          <div className="detail-row">
+            <span className="detail-label">Recibir Notificaciones:</span>
+            <span className="detail-value">{user.configuracion.recibirNotificaciones ? 'Sí' : 'No'}</span>
+          </div>
+
+
+          {/* Sección de Suscripción Premium */}
+          {tieneSuscripcion === false &&(
+            <div className="premium-subscription-section">
+              <div className="premium-subscription-container">
+                <h3>Suscripción Premium</h3>
+
+                <div className="plan-options-container">
+                  <div
+                    className={`plan-option ${selectedPlan === 'mensual' ? 'plan-option-selected' : ''}`}
+                    onClick={() => setSelectedPlan('mensual')}
+                  >
+                    <div className="plan-option-content">
+                      <RadioButton
+                        inputId="mensual"
+                        name="plan"
+                        value="mensual"
+                        checked={selectedPlan === 'mensual'}
+                        onChange={() => setSelectedPlan('mensual')}
+                      />
+                      <label htmlFor="mensual">Plan Mensual</label>
+                    </div>
+                    <div className="plan-price">$12.00 USD /mes</div>
                   </div>
-                  <div className="plan-price">$12.00 USD /mes</div>
+
+                  <div
+                    className={`plan-option ${selectedPlan === 'anual' ? 'plan-option-selected' : ''}`}
+                    onClick={() => setSelectedPlan('anual')}
+                  >
+                    <div className="plan-option-content">
+                      <RadioButton
+                        inputId="anual"
+                        name="plan"
+                        value="anual"
+                        checked={selectedPlan === 'anual'}
+                        onChange={() => setSelectedPlan('anual')}
+                      />
+                      <label htmlFor="anual">Plan Anual</label>
+                    </div>
+                    <div className="plan-price">$120.00 USD año</div>
+                  </div>
                 </div>
 
-                <div 
-                  className={`plan-option ${selectedPlan === 'anual' ? 'plan-option-selected' : ''}`}
-                  onClick={() => setSelectedPlan('anual')}
-                >
-                  <div className="plan-option-content">
-                    <RadioButton 
-                      inputId="anual" 
-                      name="plan" 
-                      value="anual"
-                      checked={selectedPlan === 'anual'}
-                      onChange={() => setSelectedPlan('anual')}
-                    />
-                    <label htmlFor="anual">Plan Anual</label>
-                  </div>
-                  <div className="plan-price">$120.00 USD año</div>
-                </div>
+                <Button
+                  label={`Comprar ${selectedPlan === 'mensual' ? 'Plan Mensual' : 'Plan Anual'}`}
+                  icon="pi pi-shopping-cart"
+                  onClick={handlePremiumPurchase}
+                  className="p-button-warning premium-purchase-button"
+                />
               </div>
-
-              <Button 
-                label={`Comprar ${selectedPlan === 'mensual' ? 'Plan Mensual' : 'Plan Anual'}`} 
-                icon="pi pi-shopping-cart" 
-                onClick={handlePremiumPurchase}
-                className="p-button-warning premium-purchase-button"
-              />
             </div>
-            <div>
-              <Button 
-                label={"Eliminar cuenta"} 
-                icon="pi pi-trash" 
-                // onClick=
-                severity="danger" outlined
-              />
-            </div>
+          )}
+          <div>
+            <Button
+              label={"Eliminar cuenta"}
+              icon="pi pi-trash"
+              // onClick=
+              severity="danger" outlined
+            />
           </div>
         </div>
       </div>
