@@ -1,0 +1,98 @@
+.dashboard-container {
+
+    /* 
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    width: 1155px;
+    height: calc(100vh - 9rem);
+    z-index: 999;
+    overflow-y: auto;
+    top: 7rem;
+    left: 22rem;
+}
+
+.main-container {
+    display: flex;
+    height: 100vh;
+
+}
+
+.left-panel {
+    background: white;
+    flex: 3;
+    padding: 10px;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.right-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    gap: 10px;
+
+}
+
+.top-box,
+.middle-box,
+.bottom-box {
+    flex: 1;
+    background-color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.orden-box {
+    flex-direction: column;
+    flex: 1;
+    background-color: white;
+
+    display: flex;
+    align-items: column;
+    justify-content: column;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+}
+
+.saldo-box {
+    flex-direction: column;
+    flex: 1;
+    background-color: white;
+
+    display: flex;
+    align-items: column;
+    justify-content: column;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+}
+
+.detalles-box{
+    flex-direction: column;
+    flex: 1;
+    background-color: white;
+
+    display: flex;
+    align-items: column;
+    justify-content: column;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+}

@@ -1,19 +1,19 @@
-/* src/Home.css */
-body {
-  overflow-x: hidden; /* Bloquea scroll horizontal */
-  overflow-y: hidden;   /* Permite solo scroll vertical cuando sea necesario */
-  width: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-.home-container {
+.landing-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  background-color: #01035a;
+  height: 100vh;
+  /* Usa viewport height en lugar de min-height */
+  background: #01035a;
   color: white;
-  padding: 3rem;
+  overflow: hidden;
+  /* Asegura que no haya scroll dentro del contenedor */
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  position: fixed;
+  /* Bloquea la posición */
+  top: 0;
+  left: 0;
 }
 
 .header {
@@ -22,6 +22,7 @@ body {
   align-items: center;
   margin-bottom: 2rem;
   flex-wrap: wrap;
+  padding: 1rem 2rem;
 }
 
 .logo {
@@ -36,7 +37,6 @@ body {
   object-fit: contain;
 }
 
-/* Contenedor principal con imagen integrada */
 .content-wrapper {
   display: flex;
   flex: 1;
@@ -44,25 +44,22 @@ body {
   align-items: center;
   margin-top: 1rem;
   position: relative;
+  padding: 0rem 2rem;
+
 }
 
 .velas-image {
-  width: 600%;
+  width: 100%;
   max-width: 800px;
   height: auto;
   border-radius: 8px;
 }
 
-/* Efecto hover sutil */
 .velas-image:hover {
   opacity: 0.92;
-  filter: 
-    brightness(1.08)
-    contrast(0.92);
+  filter: brightness(1.08) contrast(0.92);
 }
 
-
-/* Contenido principal */
 .hero-content {
   flex: 1;
   display: flex;
@@ -99,7 +96,6 @@ h1 {
   width: 100%;
 }
 
-/* Estilos de botones (preservados) */
 .cta-button {
   padding: clamp(0.8rem, 2vw, 1rem) clamp(2rem, 6vw, 3rem);
   font-size: clamp(1rem, 3vw, 1.2rem);
@@ -112,6 +108,7 @@ h1 {
   transition: all 0.3s ease;
   margin-bottom: 1.5rem;
   box-shadow: 0 4px 15px rgba(0, 230, 118, 0.3);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .cta-button:hover {
@@ -128,7 +125,6 @@ h1 {
 
 .auth-btn {
   padding: 0.75rem 1.75rem;
-  font-size: 1rem;
   border-radius: 999px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -168,32 +164,27 @@ h1 {
   background-color: #24d93a;
 }
 
-/* Media Queries Responsivas */
 @media (max-width: 1024px) {
   .content-wrapper {
     flex-direction: column;
     gap: 2rem;
   }
-  
-  .image-section {
-    min-width: auto;
-    width: 80%;
-  }
-  
+
   .hero-content {
     text-align: center;
     align-items: center;
     max-width: 100%;
   }
-  
-  h1, .hero-subtitle {
+
+  h1,
+  .hero-subtitle {
     text-align: center;
   }
-  
+
   .cta-section {
     align-items: center;
   }
-  
+
   .auth-btn {
     padding: 0.7rem 1.2rem;
     font-size: clamp(0.8rem, 2vw, 0.95rem);
@@ -210,21 +201,21 @@ h1 {
     justify-content: space-between;
     margin-bottom: 1.5rem;
   }
-  
+
   .logo {
     width: 200px;
     margin-bottom: 0;
   }
-  
+
   .velas-image {
     max-width: 100%;
     filter: brightness(1.1) contrast(0.85);
   }
-  
+
   .auth-buttons {
     gap: 0.6rem;
   }
-  
+
   .auth-btn {
     padding: 0.6rem 1rem;
     font-size: clamp(0.75rem, 2.5vw, 0.85rem);
@@ -239,45 +230,45 @@ h1 {
     align-items: center;
     gap: 1rem;
   }
-  
+
   .logo {
     width: 180px;
     margin-right: 0;
     margin-bottom: 0.5rem;
   }
-  
+
   .content-wrapper {
     margin-top: 0.5rem;
     gap: 1.5rem;
   }
-  
+
   h1 {
     font-size: 1.8rem;
     margin-bottom: 1rem;
   }
-  
+
   .hero-subtitle {
     font-size: 1.1rem;
     margin-bottom: 1.5rem;
   }
-  
+
   .cta-button {
     padding: 0.8rem 1.5rem;
     font-size: 1rem;
   }
-  
+
   .velas-image {
     opacity: 0.85;
     filter: brightness(1.15) contrast(0.8);
   }
-  
+
   .auth-buttons {
     flex-direction: row;
     justify-content: space-between;
     gap: 0.5rem;
     width: 100%;
   }
-  
+
   .auth-btn {
     flex: 1 1 48%;
     max-width: 48%;
@@ -295,18 +286,18 @@ h1 {
     flex-direction: column;
     gap: 0.5rem;
   }
-  
+
   .auth-btn {
     flex: 1 1 100%;
     max-width: 100%;
     padding: 0.6rem;
     font-size: 0.75rem;
   }
-  
+
   h1 {
     font-size: 1.6rem;
   }
-  
+
   .hero-subtitle {
     font-size: 1rem;
   }

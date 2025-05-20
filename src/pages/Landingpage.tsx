@@ -16,7 +16,7 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div className="home-container">
+    <div className="landing-container">
       <div className="header">
         <div className="logo">
           <img src={logo} alt="Acciones ElBosque" className="logo-image" />

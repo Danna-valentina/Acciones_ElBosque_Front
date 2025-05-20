@@ -1,12 +1,13 @@
 import React, { useRef, useState, ReactElement } from 'react';
 import { Menu } from 'primereact/menu';
 import { MenuItem } from 'primereact/menuitem';
-import { Toast } from 'primereact/toast';
+import { useNavigate } from 'react-router-dom';
 import Logo from '../images/Logo.png';
 import '../css/Home.css';
 
 // Componentes de vista (archivos separados)
 import ProfileView from '../views/ProfileView';
+import Dashboard from '../views/Dashboard';
 // import NewView from './views/NewView';
 // import SearchView from './views/SearchView';
 // import SettingsView from './views/SettingsView';
@@ -18,8 +19,8 @@ interface CustomMenuItem extends MenuItem {
   className?: string;
 }
 
-const Dashboard: React.FC = () => {
-  const toast = useRef<Toast>(null);
+const Home: React.FC = () => {
+  const navigate = useNavigate();
   const menuRef = useRef<Menu>(null);
   const [activeView, setActiveView] = useState<ReactElement>(<ProfileView />);
 
@@ -50,7 +51,7 @@ const Dashboard: React.FC = () => {
       label: 'Dashboard', 
       icon: 'pi pi-chart-line', 
       template: itemRenderer,
-      // command: () => handleViewChange(<SearchView />)
+      command: () => handleViewChange(<Dashboard />)
     },
     { 
       label: 'Portafolio', 
@@ -77,15 +78,15 @@ const Dashboard: React.FC = () => {
       icon: 'pi pi-sign-out', 
       template: itemRenderer,
       className: 'menuitem-logout',
-      // command: () => handleViewChange(<LogoutView />)
+      command: () => navigate('/')
     }
     
   ];
 
   return (
-    <div className="dashboard-container">
-      <header className="dashboard-header">
-        <div className="header-content logo-container">
+    <div>
+      <header className="home-header">
+        <div className="header-home logo-containerhome">
             <img src={Logo} alt="Acciones ElBosque" className="logo-dsh" />
         </div>
       </header>
@@ -106,4 +107,4 @@ const Dashboard: React.FC = () => {
   );
 };
 
-export default Dashboard;
+export default Home;

@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
-import { Divider } from 'primereact/divider';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { RadioButton } from 'primereact/radiobutton';
 import '../css/ProfileView.css';
 import { UserProfile } from '../type/user';
 import { UsuarioService } from '../service/UsuarioService';
-import { error } from 'console';
 
 
 const ProfileView: React.FC = () => {
