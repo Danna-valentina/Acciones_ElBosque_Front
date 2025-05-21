@@ -1,18 +1,11 @@
 .dashboard-container {
-
-    /* 
-    background: white;
-    border-radius: 8px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
     flex: 1;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     position: fixed;
     width: 1155px;
     height: calc(100vh - 9rem);
     z-index: 999;
-    overflow-y: auto;
     top: 7rem;
     left: 22rem;
 }
@@ -36,63 +29,97 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 5px;
-    gap: 10px;
-
+    padding: 15px;
+    gap: 15px;
+    overflow-y: auto;
+    background-color: #f5f7fa;
 }
 
-.top-box,
-.middle-box,
-.bottom-box {
-    flex: 1;
+.orden-box, .saldo-box, .detalles-box {
     background-color: white;
-
     display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 8px;
+    flex-direction: column;
+    border-radius: 10px;
     padding: 1.5rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e1e5eb;
+}
+
+.orden-box h2, .saldo-box h2, .detalles-box h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #2d3748;
+    font-size: 1.2rem;
+    font-weight: 600;
 }
 
 .orden-box {
-    flex-direction: column;
-    flex: 1;
-    background-color: white;
+    gap: 12px;
+}
 
-    display: flex;
-    align-items: column;
-    justify-content: column;
-    border-radius: 8px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.orden-box .p-button {
+    width: 100%;
+    justify-content: center;
+    padding: 0.75rem;
+    font-weight: 500;
+    transition: all 0.2s;
+}
 
+.orden-box .p-button:first-child {
+    margin-bottom: 8px;
 }
 
 .saldo-box {
-    flex-direction: column;
-    flex: 1;
-    background-color: white;
-
     display: flex;
-    align-items: column;
-    justify-content: column;
-    border-radius: 8px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
+    flex-direction: column;
+    gap: 10px; /* Espacio entre elementos */
 }
 
-.detalles-box{
-    flex-direction: column;
-    flex: 1;
-    background-color: white;
+.saldo-box > div:last-child { /* Afecta solo al contenedor del botón */
+    width: 100%;
+}
 
-    display: flex;
-    align-items: column;
-    justify-content: column;
-    border-radius: 8px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.saldo-box .p-button {
+    width: 100%; /* Ocupa todo el ancho */
+    justify-content: center; /* Centra el texto */
+    padding: 0.75rem; /* Aumenta el padding para mejor tacto */
+}
 
+.detail-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a365d;
+}
+
+.saldo-box .detail-value {
+    color: #2b6cb0;
+}
+
+.detalles-box {
+    gap: 1rem;
+}
+
+.detalles-box > div {
+    width: 100%;
+}
+
+.detalles-box .detail-value {
+    display: block;
+}
+
+.detalles-box > div:first-child .detail-value {
+    color: #38a169; /* Verde para ganancias */
+}
+
+.detalles-box > div:last-child .detail-value {
+    color: #e53e3e; /* Rojo para pérdidas */
+}
+
+.p-button {
+    transition: all 0.2s;
+}
+
+.p-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
