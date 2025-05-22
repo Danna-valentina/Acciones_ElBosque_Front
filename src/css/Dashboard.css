@@ -1,3 +1,4 @@
+/* Estructura principal */
 .dashboard-container {
     flex: 1;
     display: flex;
@@ -10,18 +11,11 @@
     left: 22rem;
 }
 
-.main-container {
-    display: flex;
-    height: 100vh;
-
-}
-
 .left-panel {
     background: white;
     flex: 3;
-    padding: 10px;
-    border-radius: 8px;
     padding: 1.5rem;
+    border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -35,6 +29,53 @@
     background-color: #f5f7fa;
 }
 
+/* Estilos para el menú de acciones */
+.acciones-menu {
+    width: 30%;
+    background: transparent;
+}
+
+.acciones-menu .p-megamenu-panel {
+    width: 100% !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+.acciones-menu .p-megamenu-grid {
+    display: block !important;
+    padding: 0 !important;
+}
+
+.acciones-menu-item {
+    display: block;
+    width: 100%;
+    margin: 0.25rem 0;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.acciones-menu-item .p-menuitem-link {
+    padding: 0 !important;
+}
+
+.acciones-menu-item:hover {
+    background-color: #f8fafc;
+}
+
+.acciones-menu-item .pi {
+    margin-right: 0.75rem;
+}
+
+.acciones-menu-item .pi-star {
+    color: #cbd5e0;
+}
+
+.acciones-menu-item .pi-star-fill {
+    color: gold;
+}
+
+/* Estilos para las cajas */
 .orden-box, .saldo-box, .detalles-box {
     background-color: white;
     display: flex;
@@ -57,7 +98,7 @@
     gap: 12px;
 }
 
-.orden-box .p-button {
+.order-button {
     width: 100%;
     justify-content: center;
     padding: 0.75rem;
@@ -65,30 +106,33 @@
     transition: all 0.2s;
 }
 
-.orden-box .p-button:first-child {
+.order-button:first-child {
     margin-bottom: 8px;
 }
 
 .saldo-box {
     display: flex;
     flex-direction: column;
-    gap: 10px; /* Espacio entre elementos */
+    gap: 10px;
 }
 
-.saldo-box > div:last-child { /* Afecta solo al contenedor del botón */
+.recharge-button {
     width: 100%;
-}
-
-.saldo-box .p-button {
-    width: 100%; /* Ocupa todo el ancho */
-    justify-content: center; /* Centra el texto */
-    padding: 0.75rem; /* Aumenta el padding para mejor tacto */
+    justify-content: center;
+    padding: 0.75rem;
 }
 
 .detail-value {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #1a365d;
+}
+
+.profit-value {
+    color: #38a169;
+}
+
+.loss-value {
+    color: #e53e3e;
 }
 
 .saldo-box .detail-value {
@@ -99,22 +143,39 @@
     gap: 1rem;
 }
 
-.detalles-box > div {
+/* Diálogo de recarga */
+.recharge-dialog {
+    width: 350px;
+    border-radius: 8px;
+}
+
+.recharge-dialog .p-dialog-header {
+    padding: 1rem 1.5rem;
+}
+
+.dialog-content {
+    padding: 0 1.5rem 1.5rem;
+}
+
+.input-container {
+    margin: 1.5rem 0;
+}
+
+.amount-input {
     width: 100%;
 }
 
-.detalles-box .detail-value {
-    display: block;
+.dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
 }
 
-.detalles-box > div:first-child .detail-value {
-    color: #38a169; /* Verde para ganancias */
+.confirm-button, .cancel-button {
+    min-width: 120px;
 }
 
-.detalles-box > div:last-child .detail-value {
-    color: #e53e3e; /* Rojo para pérdidas */
-}
-
+/* Efectos hover */
 .p-button {
     transition: all 0.2s;
 }
