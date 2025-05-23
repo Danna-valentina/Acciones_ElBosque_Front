@@ -28,55 +28,8 @@
     overflow-y: auto;
     background-color: #f5f7fa;
 }
-
-/* Estilos para el menú de acciones */
-.acciones-menu {
-    width: 30%;
-    background: transparent;
-}
-
-.acciones-menu .p-megamenu-panel {
-    width: 100% !important;
-    box-shadow: none !important;
-    border: none !important;
-}
-
-.acciones-menu .p-megamenu-grid {
-    display: block !important;
-    padding: 0 !important;
-}
-
-.acciones-menu-item {
-    display: block;
-    width: 100%;
-    margin: 0.25rem 0;
-    padding: 0.75rem 1.5rem;
-    border-radius: 6px;
-    transition: all 0.2s;
-}
-
-.acciones-menu-item .p-menuitem-link {
-    padding: 0 !important;
-}
-
-.acciones-menu-item:hover {
-    background-color: #f8fafc;
-}
-
-.acciones-menu-item .pi {
-    margin-right: 0.75rem;
-}
-
-.acciones-menu-item .pi-star {
-    color: #cbd5e0;
-}
-
-.acciones-menu-item .pi-star-fill {
-    color: gold;
-}
-
 /* Estilos para las cajas */
-.orden-box, .saldo-box, .detalles-box {
+.orden-box, .saldo-box, .detalles-box, .price-box{
     background-color: white;
     display: flex;
     flex-direction: column;
@@ -183,4 +136,200 @@
 .p-button:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/*------------------------------*/
+/* ===========================================
+   Estilos base y estructura principal
+=========================================== */
+.acciones-menu-container {
+    font-family: 'Segoe UI', Roboto, -apple-system, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.acciones-menu-container h1 {
+    color: #2563eb;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+/* ===========================================
+   Estilo del menú desplegable de acciones
+=========================================== */
+.acciones-menu {
+    position: relative;
+}
+
+.acciones-menu .p-megamenu-panel {
+    width: 960px;
+    max-width: calc(100vw - 2rem);
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e7ff;
+    padding: 1.5rem;
+    box-sizing: border-box;
+    left: 0;
+    z-index: 1000;
+}
+
+.acciones-menu .p-megamenu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.75rem;
+}
+
+.acciones-menu .p-megamenu-col {
+    padding: 0.5rem 0.4rem;
+    border-right: none !important;
+}
+
+/* ===========================================
+   Items del menú
+=========================================== */
+.acciones-menu-item {
+    display: flex;
+    align-items: center;
+    padding: 0.6rem 0.8rem;
+    margin-bottom: 0.4rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #1f2937;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    transition: all 0.2s ease;
+}
+
+.acciones-menu-item:hover {
+    background-color: transparent;
+    border-color: transparent;
+    transform: none;
+    box-shadow: none;
+}
+
+.acciones-menu-item .p-menuitem-link {
+    padding: 0 !important;
+}
+
+.acciones-menu-item .pi {
+    margin-right: 0.75rem;
+}
+
+/* ===========================================
+   Iconos de estrella (favoritos)
+=========================================== */
+.acciones-menu-item .pi-star {
+    color: #cbd5e0; /* gris claro */
+}
+
+.acciones-menu-item .pi-star-fill {
+    color: gold;
+}
+
+/* ===========================================
+   Secciones especiales (ej. órdenes)
+=========================================== */
+.ordenas-section {
+    grid-column: span 4;
+    margin-top: 1.5rem;
+    padding: 1.2rem;
+    background-color: #f0f9ff;
+    border-radius: 10px;
+    border: 1px solid #bfdbfe;
+    box-sizing: border-box;
+}
+
+.ordenas-section .acciones-menu-item {
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.highlight-item {
+    background-color: transparent !important;
+    color: #4f46e5;
+    font-weight: 600;
+}
+
+/* ===========================================
+   Contenedor adicional y grupos de items
+=========================================== */
+.acciones-items-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.25rem;
+}
+
+.acciones-group {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    box-sizing: border-box;
+}
+
+.acciones-item {
+    padding: 8px 12px;
+    margin: 4px 0;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #1f2937;
+    background: transparent;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: all 0.2s ease;
+}
+
+.acciones-item:hover {
+    background: transparent;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ===========================================
+   Responsive
+=========================================== */
+@media (max-width: 1024px) {
+    .acciones-menu .p-megamenu-panel {
+        width: 100vw;
+        left: -1rem;
+    }
+    .acciones-menu .p-megamenu-grid {
+        grid-template-columns: repeat(2, minmax(180px, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .acciones-items-container {
+        grid-template-columns: 1fr;
+    }
+    .acciones-menu .p-megamenu-grid {
+        grid-template-columns: 1fr;
+    }
+    .acciones-group {
+        padding: 8px;
+    }
+}
+.live-price-box {
+  margin-top: 20px;
+  background-color: #eef9ff;
+  border: 1px solid #cce;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.live-price {
+  color: green;
+  font-size: 1.5rem;
+  font-weight: bold;
 }

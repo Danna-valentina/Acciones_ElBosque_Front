@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
+import { Divider } from 'primereact/divider';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { RadioButton } from 'primereact/radiobutton';
 import '../css/ProfileView.css';
 import { UserProfile } from '../type/user';
 import { UsuarioService } from '../service/UsuarioService';
+import { error } from 'console';
 
 
 const ProfileView: React.FC = () => {
@@ -47,7 +49,7 @@ const ProfileView: React.FC = () => {
       if (email) {
         fetchData();
       } else {
-        setIsLoading(false); 
+        setIsLoading(false);
         console.error("No se encontró email en localStorage");
       }
 
@@ -67,12 +69,37 @@ const ProfileView: React.FC = () => {
   };
 
 
-  const handleSave = () => {
-    if (user) {
-      console.log('Datos guardados:', user);
+  const handleSave = async () => {
+    if (!user || !email) return;
+
+    try {
+      const {
+        primerNombre,
+        segundoNombre,
+        primerApellido,
+        segundoApellido,
+        telefono
+      } = user;
+
+      const datosActualizados = {
+        primerNombre,
+        segundoNombre,
+        primerApellido,
+        segundoApellido,
+        telefono
+      };
+
+      const respuesta = await usuarioService.actualizarUsuario(email, datosActualizados);
+      console.log("Respuesta del backend:", respuesta);
+
+      alert("Perfil actualizado correctamente.");
       setEditMode(false);
+    } catch (error) {
+      console.error("Error al guardar los cambios:", error);
+      alert("Hubo un error actualizando el perfil.");
     }
   };
+
 
   const handleCancel = () => {
     if (email) {
@@ -88,18 +115,36 @@ const ProfileView: React.FC = () => {
         .finally(() => setIsLoading(false));
     }
   };
+  const handleDelete = async () => {
+    if (!email) return;
+
+    const confirmacion = window.confirm("¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.");
+
+    if (!confirmacion) return;
+
+    try {
+      await usuarioService.eliminarUsuario(email);
+      alert("Cuenta eliminada correctamente.");
+      localStorage.clear();
+      window.location.href = '/LoginPage'; // Redirecciona a la página de inicio (ajústalo si tienes una ruta específica)
+    } catch (error) {
+      console.error("Error al eliminar la cuenta:", error);
+      alert("Ocurrió un error al intentar eliminar la cuenta.");
+    }
+  };
+
 
   const handlePremiumPurchase = async () => {
-  if (!user) return;
+    if (!user) return;
 
-  try {
-    const response = await usuarioService.enviarSuscripcion(selectedPlan);
-    window.location.href = response;
-  } catch (error) {
-    console.error("Error al crear la suscripción:", error);
-    alert("No se pudo redirigir a Stripe. Intenta nuevamente.");
-  }
-};
+    try {
+      const response = await usuarioService.enviarSuscripcion(selectedPlan);
+      window.location.href = response;
+    } catch (error) {
+      console.error("Error al crear la suscripción:", error);
+      alert("No se pudo redirigir a Stripe. Intenta nuevamente.");
+    }
+  };
 
   if (isLoading || !user) {
     return (
@@ -244,7 +289,7 @@ const ProfileView: React.FC = () => {
 
 
           {/* Sección de Suscripción Premium */}
-          {tieneSuscripcion === false &&(
+          {tieneSuscripcion === false && (
             <div className="premium-subscription-section">
               <div className="premium-subscription-container">
                 <h3>Suscripción Premium</h3>
@@ -296,11 +341,13 @@ const ProfileView: React.FC = () => {
           )}
           <div>
             <Button
-              label={"Eliminar cuenta"}
+              label="Eliminar cuenta"
               icon="pi pi-trash"
-              // onClick=
-              severity="danger" outlined
+              onClick={handleDelete}
+              severity="danger"
+              outlined
             />
+
           </div>
         </div>
       </div>

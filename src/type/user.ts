@@ -5,7 +5,14 @@ export interface Configuracion {
 export enum Moneda {
   USD = 'USD',
   EUR = 'EUR',
-  GBP = 'GBP'
+  COP = 'COP'
+}
+export interface UsuarioUpdate {
+  primerNombre: string;
+  segundoNombre: string;
+  primerApellido: string;
+  segundoApellido: string;
+  telefono: string;
 }
 
 

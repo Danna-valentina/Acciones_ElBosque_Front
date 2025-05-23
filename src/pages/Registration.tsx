@@ -38,7 +38,7 @@ const RegistrationWizard = () => {
     const currencyOptions = [
         { label: 'Dólar Estadounidense (USD)', value: Moneda.USD },
         { label: 'Euro (EUR)', value: Moneda.EUR },
-        { label: 'Libra Esterlina (GBP)', value: Moneda.GBP }
+        { label: 'Peso Colombiano (COP)', value: Moneda.COP }
     ];
 
     const steps = [
